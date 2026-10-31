@@ -2,7 +2,37 @@
   "version": 1,
   "editor": "wokwi",
   "parts": [
-    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} }
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "board-mfrc522", "id": "rfid_entry", "top": -280, "left": -320, "attrs": {} },
+    { "type": "board-mfrc522", "id": "rfid_exit",  "top": -280, "left": -60,  "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo_entry", "top": -60, "left": -340, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo_exit",  "top": 60,  "left": -340, "attrs": {} },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 180, "left": -300, "attrs": { "volume": "0.2" } }
   ],
-  "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ]
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "rfid_entry:3.3V", "esp:3V3", "red", [] ],
+    [ "rfid_entry:GND",  "esp:GND.1", "black", [] ],
+    [ "rfid_entry:SCK",  "esp:18", "orange", [] ],
+    [ "rfid_entry:MOSI", "esp:23", "blue", [] ],
+    [ "rfid_entry:MISO", "esp:19", "green", [] ],
+    [ "rfid_entry:SDA",  "esp:5",  "violet", [] ],
+    [ "rfid_entry:RST",  "esp:27", "gray", [] ],
+    [ "rfid_exit:3.3V", "esp:3V3", "red", [] ],
+    [ "rfid_exit:GND",  "esp:GND.1", "black", [] ],
+    [ "rfid_exit:SCK",  "esp:18", "orange", [] ],
+    [ "rfid_exit:MOSI", "esp:23", "blue", [] ],
+    [ "rfid_exit:MISO", "esp:19", "green", [] ],
+    [ "rfid_exit:SDA",  "esp:4",  "violet", [] ],
+    [ "rfid_exit:RST",  "esp:27", "gray", [] ],
+    [ "servo_entry:V+",  "esp:5V", "red", [] ],
+    [ "servo_entry:GND", "esp:GND.2", "black", [] ],
+    [ "servo_entry:PWM", "esp:25", "yellow", [] ],
+    [ "servo_exit:V+",   "esp:5V", "red", [] ],
+    [ "servo_exit:GND",  "esp:GND.2", "black", [] ],
+    [ "servo_exit:PWM",  "esp:26", "yellow", [] ],
+    [ "buzzer:2", "esp:2", "yellow", [] ],
+    [ "buzzer:1", "esp:GND.2", "black", [] ]
+  ]
 }
