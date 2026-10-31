@@ -103,7 +103,22 @@ sandbox folder (it only contains the parts that lesson needs).
   then **F1 → Wokwi: Start Simulator**. It reloads automatically after each build.
 - **Wokwi CLI**: `wokwi-cli --interactive .` with a `WOKWI_CLI_TOKEN`. Needs CI minutes.
 
-## 7. Known simulation limits
+## 7. Where are the SD card files?
+
+**Browser:** nowhere you can click. The free simulator keeps the card in memory and throws
+it away when the simulation stops; the "SD Card" tab only lists files uploaded beforehand
+(a paid feature). The log is still real:
+
+- menu **8** prints the size of `/sdcard/events.csv`, growing with every event
+- menu **4** and **7** read their rows back from that file
+- press the board's **RST** button: the firmware restarts, the card does not, and the
+  counts in **7** carry on from where they were
+
+**VS Code / wokwi-cli:** `wokwi.toml` has an `[[sdcard]]` section with `writeback = true`.
+When the simulation stops, the card is copied into `sdcard/` and `events.csv` can be
+opened on the PC.
+
+## 8. Known simulation limits
 
 - The simulated CPU runs slower than real silicon; polling intervals in `config.h` are
   generous on purpose.

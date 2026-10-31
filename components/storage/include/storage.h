@@ -13,3 +13,6 @@ int storage_count(event_type_t type);
 
 /* True when the microSD card mounted. If false, the log lives only in RAM. */
 bool storage_sd_mounted(void);
+
+/* Size of the log file on the card in bytes; 0 when there is no card or no file yet. */
+long storage_log_bytes(void);

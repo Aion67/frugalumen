@@ -312,7 +312,11 @@ static void item_status(void)
     printf("Time:        %s\n", when);
     printf("Schedule:    %02u:%02u - %02u:%02u (%s)\n", start / 60, start % 60, end / 60, end % 60,
            core_access_window_open(now) ? "OPEN" : "CLOSED");
-    printf("SD card:     %s\n", storage_sd_mounted() ? "mounted" : "missing (RAM log)");
+    if (storage_sd_mounted()) {
+        printf("SD card:     mounted, %s is %ld bytes\n", LOG_FILE_PATH, storage_log_bytes());
+    } else {
+        printf("SD card:     missing (RAM log)\n");
+    }
     printf("Free heap:   %lu bytes\n", (unsigned long)esp_get_free_heap_size());
 }
 

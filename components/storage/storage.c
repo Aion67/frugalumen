@@ -13,6 +13,7 @@
  */
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 #include "storage.h"
 #include "config.h"
 #include "esp_log.h"
@@ -268,6 +269,21 @@ int storage_count(event_type_t type)
 bool storage_sd_mounted(void)
 {
     return s_mounted;
+}
+
+long storage_log_bytes(void)
+{
+    if (!s_mounted) {
+        return 0;
+    }
+    struct stat st;
+    xSemaphoreTake(s_file_lock, portMAX_DELAY);
+    int rc = stat(LOG_FILE_PATH, &st);
+    xSemaphoreGive(s_file_lock);
+    if (rc != 0) {
+        return 0;
+    }
+    return (long)st.st_size;
 }
 
 /* ------------------------------------------------------------------ */

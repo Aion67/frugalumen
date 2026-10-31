@@ -2,3 +2,12 @@
 version = 1
 firmware = "build/flasher_args.json"
 elf = "build/frugalumen.elf"
+
+# Wokwi for VS Code / wokwi-cli only (the browser ignores this file):
+# start the microSD card from ./sdcard and copy it back there when the
+# simulation stops, so events.csv can be opened on the PC afterwards.
+[[sdcard]]
+part = "sd"
+folder = "sdcard"
+size = "8M"
+writeback = true
