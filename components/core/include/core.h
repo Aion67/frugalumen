@@ -1,5 +1,11 @@
 #pragma once
-/* Shared-state contract. Frozen on Saturday. Every module compiles against this and nothing else. */
+/*
+ * core.h — the shared-state contract.
+ *
+ * Every module compiles against this header and nothing else from core.
+ * All state lives inside core.c behind one mutex; the functions below are the
+ * only way to read or change it. Do not change this file without telling the group.
+ */
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -7,11 +13,13 @@
 #include "esp_err.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
+#include "driver/spi_master.h"
+#include "driver/i2c_master.h"
 
 typedef enum { ROOM_1 = 0, ROOM_2, ROOM_COUNT } room_id_t;
 typedef enum { LANE_ENTRY, LANE_EXIT } lane_t;
 typedef enum { EV_ENTRY, EV_EXIT, EV_DENIED, EV_LIGHT_ON, EV_LIGHT_OFF,
-               EV_CONFIG, EV_ALERT } event_type_t;
+               EV_CONFIG, EV_ALERT, EV_TYPE_COUNT } event_type_t;
 
 typedef struct {
     time_t        ts;
@@ -42,3 +50,11 @@ void      core_schedule_get(uint16_t *start_min, uint16_t *end_min);
 /* events — any module may emit; storage consumes */
 void          core_emit(const event_t *e);
 QueueHandle_t core_event_queue(void);
+const char   *core_event_name(event_type_t type);   /* "ENTRY", "EXIT", ... for logs and menus */
+
+/* time — the DS1307 RTC sits behind core so only one module touches it */
+esp_err_t core_time_set(time_t now);   /* writes the RTC and the system clock */
+
+/* shared buses — a bus is a shared resource, so core owns its initialisation */
+spi_host_device_t       core_spi_host(void);
+i2c_master_bus_handle_t core_i2c_bus(void);
