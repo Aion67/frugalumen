@@ -2,7 +2,15 @@
   "version": 1,
   "editor": "wokwi",
   "parts": [
-    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} }
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-ds1307", "id": "rtc", "top": -120, "left": 260, "attrs": { "initTime": "now" } }
   ],
-  "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ]
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "rtc:5V",  "esp:5V", "red", [] ],
+    [ "rtc:GND", "esp:GND.2", "black", [] ],
+    [ "rtc:SDA", "esp:21", "cyan", [] ],
+    [ "rtc:SCL", "esp:22", "magenta", [] ]
+  ]
 }
