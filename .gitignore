@@ -64,3 +64,6 @@ dependencies.lock
 
 sdkconfig
 .DS_Store
+
+# sandbox build logs from the build-all script
+sandbox/*/build.log
