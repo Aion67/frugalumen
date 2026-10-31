@@ -50,6 +50,7 @@ static const char *TAG = "mfrc522";
 #define ERR_MASK          0x13   /* BufferOvfl | ParityErr | ProtocolErr */
 
 #define TRANSCEIVE_TIMEOUT_MS 40
+#define FIFO_READ_MAX         16
 
 static esp_err_t write_reg(mfrc522_t *r, uint8_t reg, uint8_t value)
 {
@@ -72,6 +73,37 @@ static uint8_t read_reg(mfrc522_t *r, uint8_t reg)
     };
     spi_device_transmit(r->spi, &t);
     return rx[1];
+}
+
+/*
+ * Read n bytes from the FIFO in ONE SPI transaction, the way the MFRC522
+ * datasheet (section 8.1.2.1) describes: send the address, then keep sending
+ * the address while clocking replies in, and send 0x00 for the final byte.
+ * Reply byte i+1 is FIFO byte i; reply byte 0 is junk.
+ */
+static void read_fifo(mfrc522_t *r, uint8_t *out, int n)
+{
+    uint8_t tx[FIFO_READ_MAX + 1];
+    uint8_t rx[FIFO_READ_MAX + 1];
+    uint8_t addr = ((REG_FIFO_DATA << 1) & 0x7E) | 0x80;
+
+    if (n > FIFO_READ_MAX) {
+        n = FIFO_READ_MAX;
+    }
+    for (int i = 0; i < n; i++) {
+        tx[i] = addr;
+    }
+    tx[n] = 0x00;
+
+    spi_transaction_t t = {
+        .length    = (n + 1) * 8,
+        .tx_buffer = tx,
+        .rx_buffer = rx,
+    };
+    spi_device_transmit(r->spi, &t);
+    for (int i = 0; i < n; i++) {
+        out[i] = rx[i + 1];
+    }
 }
 
 static void set_bits(mfrc522_t *r, uint8_t reg, uint8_t mask)
@@ -162,9 +194,7 @@ static int transceive(mfrc522_t *r, const uint8_t *tx, int tx_len,
     if (n > rx_max) {
         n = rx_max;
     }
-    for (int i = 0; i < n; i++) {
-        rx[i] = read_reg(r, REG_FIFO_DATA);
-    }
+    read_fifo(r, rx, n);
     return n;
 }
 
@@ -188,7 +218,8 @@ bool mfrc522_read_uid(mfrc522_t *reader, uint32_t *uid)
     }
     uint8_t bcc = reply[0] ^ reply[1] ^ reply[2] ^ reply[3];
     if (bcc != reply[4]) {
-        ESP_LOGW(TAG, "%s: UID checksum mismatch", reader->name);
+        ESP_LOGW(TAG, "%s: UID checksum mismatch, got %02X %02X %02X %02X bcc %02X",
+                 reader->name, reply[0], reply[1], reply[2], reply[3], reply[4]);
         return false;
     }
 

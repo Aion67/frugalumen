@@ -91,8 +91,19 @@ static int transceive(const uint8_t *tx, int tx_len, uint8_t *rx, int rx_max, ui
     if (n > rx_max) {
         n = rx_max;
     }
+    /* Read the whole FIFO in ONE transaction: the address byte is repeated
+     * for every byte we want, and the last byte sent is 0x00. Reading one
+     * byte per transaction confuses the FIFO pointer on some readers. */
+    uint8_t fifo_tx[17];
+    uint8_t rx_raw[17];
     for (int i = 0; i < n; i++) {
-        rx[i] = read_reg(REG_FIFO_DATA);
+        fifo_tx[i] = ((REG_FIFO_DATA << 1) & 0x7E) | 0x80;
+    }
+    fifo_tx[n] = 0x00;
+    spi_transaction_t t = { .length = (n + 1) * 8, .tx_buffer = fifo_tx, .rx_buffer = rx_raw };
+    spi_device_transmit(s_spi, &t);
+    for (int i = 0; i < n; i++) {
+        rx[i] = rx_raw[i + 1];       /* rx_raw[0] arrived while we sent the first address */
     }
     return n;
 }
