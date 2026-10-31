@@ -98,7 +98,7 @@ void app_main(void)
     lcd_print(0, "Hello CoCIS");
     int n = 0;
     while (1) {
-        char line[17];
+        char line[24];
         snprintf(line, sizeof line, "count: %d", n++);
         lcd_print(1, line);
         vTaskDelay(pdMS_TO_TICKS(1000));
