@@ -9,6 +9,7 @@
  * "logged in" state to forget to log out of.
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "console.h"
@@ -16,6 +17,7 @@
 #include "auth.h"
 #include "storage.h"
 #include "esp_log.h"
+#include "esp_system.h"
 #include "driver/uart.h"
 #include "driver/uart_vfs.h"
 #include "freertos/task.h"

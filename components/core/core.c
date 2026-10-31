@@ -160,8 +160,33 @@ static esp_err_t schedule_save(uint16_t start, uint16_t end)
 /* buses and clock                                                     */
 /* ------------------------------------------------------------------ */
 
+/* Park every chip-select line high before any SPI traffic. Until a module adds
+ * its device, that pin would float, and a floating (= possibly low) CS lets the
+ * wrong chip answer during the SD card's initialisation. */
+static esp_err_t spi_cs_idle(void)
+{
+    gpio_config_t cs = {
+        .pin_bit_mask = (1ULL << PIN_RFID_ENTRY_CS) | (1ULL << PIN_RFID_EXIT_CS) | (1ULL << PIN_SD_CS),
+        .mode         = GPIO_MODE_OUTPUT,
+    };
+    esp_err_t err = gpio_config(&cs);
+    if (err != ESP_OK) {
+        return err;
+    }
+    gpio_set_level(PIN_RFID_ENTRY_CS, 1);
+    gpio_set_level(PIN_RFID_EXIT_CS, 1);
+    gpio_set_level(PIN_SD_CS, 1);
+    return ESP_OK;
+}
+
 static esp_err_t buses_setup(void)
 {
+    esp_err_t err = spi_cs_idle();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "chip-select setup failed");
+        return err;
+    }
+
     spi_bus_config_t spi = {
         .sclk_io_num     = PIN_SPI_SCK,
         .mosi_io_num     = PIN_SPI_MOSI,
@@ -170,7 +195,7 @@ static esp_err_t buses_setup(void)
         .quadhd_io_num   = -1,
         .max_transfer_sz = 4096,
     };
-    esp_err_t err = spi_bus_initialize(core_spi_host(), &spi, SPI_DMA_CH_AUTO);
+    err = spi_bus_initialize(core_spi_host(), &spi, SPI_DMA_CH_AUTO);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "SPI bus init failed");
         return err;

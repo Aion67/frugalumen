@@ -64,7 +64,7 @@ the window (or **6** to set the time).
 | Do this in Wokwi | Expect |
 |---|---|
 | Click the **entry** reader → pick **Blue Card** → **Tap** | Serial: `ENTRY Joan Nakato`, entry servo turns for 3 s, one beep, LCD `In: 1` |
-| Tap Blue on the entry reader **again** | `DENIED … already inside`, two low beeps (anti-passback) |
+| Wait 2 s, tap Blue on the entry reader **again** | `DENIED … already inside`, two low beeps (anti-passback) |
 | Tap **Red Card** anywhere | `DENIED … unknown tag` (red is deliberately not enrolled) |
 | Tap Blue on the **exit** reader | `EXIT Joan Nakato`, exit servo turns, LCD `In: 0` |
 | Tap Green on the **exit** reader without entering | `DENIED … not inside` |
