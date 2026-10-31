@@ -1,3 +1,3 @@
 idf_component_register(SRCS "console.c"
                        INCLUDE_DIRS "include"
-                       REQUIRES core console nvs_flash)
+                       REQUIRES core nvs_flash)
