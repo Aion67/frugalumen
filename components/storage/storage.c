@@ -309,3 +309,17 @@ static void storage_task(void *arg)
         ESP_LOGI(TAG, "logged %s uid=%08lX %s", core_event_name(e.type), (unsigned long)e.uid, e.note);
     }
 }
+
+    char line[LINE_SIZE];
+    event_t e;
+    int count = 0;
+    while (fgets(line, sizeof(line), f) != NULL) {
+        if (parse_line(line, &e) && e.type == type) {
+            count++;
+        }
+    }
+
+    fclose(f);
+    xSemaphoreGive(file_mutex);
+    return count;
+}
