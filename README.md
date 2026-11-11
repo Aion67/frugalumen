@@ -8,6 +8,10 @@ management console and an LCD status board. **One ESP32, ESP-IDF v6, simulated i
 > against. See `CLAUDE.md` for the ground rules and `docs/` for the brief, architecture,
 > coding style and the sandbox idea.
 
+<div align="center">
+<img src="docs/schema.png" alt="schematic image" size=70%>
+</div>
+
 ## Quick start
 
 ```bash
@@ -20,31 +24,31 @@ Full run instructions, demo script and card list: **[docs/wokwi.md](docs/wokwi.m
 
 ## What is where
 
-| Path | What |
-|---|---|
-| `main/main.c` | `app_main`: calls each module's `init()` and nothing else |
-| `components/core/` | shared state behind one mutex, event queue, buses, RTC, NVS schedule |
-| `components/rfid_door/` | entrance: two MFRC522 readers, two servo doors, buzzer |
-| `components/lighting/` | one task per room: PIR → LED with a grace timer |
-| `components/storage/` | the single SD writer; CSV event log with RAM fallback |
-| `components/console/` | numbered serial menu, PIN-protected admin items, daily report |
-| `components/display/` | LCD1602 over I2C, refreshed once a second |
-| `components/core/include/config.h` | **every pin, address and timeout** |
-| `sandbox/<owner>-<module>/` | numbered, heavily commented lessons building up to each module |
-| `diagram.json` | Wokwi wiring, matches `config.h` |
+| Path                               | What                                                                 |
+| ---------------------------------- | -------------------------------------------------------------------- |
+| `main/main.c`                      | `app_main`: calls each module's `init()` and nothing else            |
+| `components/core/`                 | shared state behind one mutex, event queue, buses, RTC, NVS schedule |
+| `components/rfid_door/`            | entrance: two MFRC522 readers, two servo doors, buzzer               |
+| `components/lighting/`             | one task per room: PIR → LED with a grace timer                      |
+| `components/storage/`              | the single SD writer; CSV event log with RAM fallback                |
+| `components/console/`              | numbered serial menu, PIN-protected admin items, daily report        |
+| `components/display/`              | LCD1602 over I2C, refreshed once a second                            |
+| `components/core/include/config.h` | **every pin, address and timeout**                                   |
+| `sandbox/<owner>-<module>/`        | numbered, heavily commented lessons building up to each module       |
+| `diagram.json`                     | Wokwi wiring, matches `config.h`                                     |
 
 ## How the requirements map
 
-| Brief | Where |
-|---|---|
-| 2.1 Access control, entry/exit records | `rfid_door` decides, `core_record_entry/exit` keep state, `storage` logs |
-| 2.2 Automatic lighting | `lighting` |
-| 2.3 Three terminals | three FreeRTOS tasks: `rfid_door`, `light1`, `light2` |
-| 2.4 microSD storage | `storage` (`/sdcard/events.csv`) |
-| 2.5 Serial menus + LCD | `console`, `display` |
-| 2.6 Configurable access window, admin only | console item 5 behind the PIN; saved in NVS |
-| 2.7 Synchronisation | mutex in `core`, FreeRTOS queue for events, mutex on the log file, SPI driver per-device locking |
-| Innovation | anti-passback, overstay alert with flagged late exits, daily occupancy/energy report |
+| Brief                                      | Where                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| 2.1 Access control, entry/exit records     | `rfid_door` decides, `core_record_entry/exit` keep state, `storage` logs                         |
+| 2.2 Automatic lighting                     | `lighting`                                                                                       |
+| 2.3 Three terminals                        | three FreeRTOS tasks: `rfid_door`, `light1`, `light2`                                            |
+| 2.4 microSD storage                        | `storage` (`/sdcard/events.csv`)                                                                 |
+| 2.5 Serial menus + LCD                     | `console`, `display`                                                                             |
+| 2.6 Configurable access window, admin only | console item 5 behind the PIN; saved in NVS                                                      |
+| 2.7 Synchronisation                        | mutex in `core`, FreeRTOS queue for events, mutex on the log file, SPI driver per-device locking |
+| Innovation                                 | anti-passback, overstay alert with flagged late exits, daily occupancy/energy report             |
 
 ## Hardware (all in `config.h`)
 
