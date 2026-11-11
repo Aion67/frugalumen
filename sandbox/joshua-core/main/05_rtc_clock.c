@@ -20,7 +20,7 @@ static const char *TAG = "lesson05";
 
 static int bcd_to_bin(uint8_t v)
 {
-    return (v >> 4) * 10 + (v & 0x0F);
+    return (v >> 4) * 10 + (v & 0x0F); // watch out for arithmetic right shift
 }
 
 void app_main(void)
