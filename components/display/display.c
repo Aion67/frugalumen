@@ -1,4 +1,4 @@
-/*
+k/*
  * display.c — show the building state on the LCD.
  *
  *   line 1:  In: 3 L1:* L2:-        people inside, light per room (* on, - off)
