@@ -1,3 +1,3 @@
-idf_component_register(SRCS "display.c"
+idf_component_register(SRCS "display.c" "lcd1602.c"
                        INCLUDE_DIRS "include"
-                       REQUIRES core driver)
+                       REQUIRES core esp_driver_i2c)

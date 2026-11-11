@@ -2,7 +2,21 @@
   "version": 1,
   "editor": "wokwi",
   "parts": [
-    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} }
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-lcd1602", "id": "lcd", "top": -200, "left": -100,
+      "attrs": { "pins": "i2c", "i2cAddress": "0x27" } },
+    { "type": "wokwi-ds1307", "id": "rtc", "top": -200, "left": 300, "attrs": { "initTime": "now" } }
   ],
-  "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ]
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "lcd:VCC", "esp:5V", "red", [] ],
+    [ "lcd:GND", "esp:GND.2", "black", [] ],
+    [ "lcd:SDA", "esp:21", "cyan", [] ],
+    [ "lcd:SCL", "esp:22", "magenta", [] ],
+    [ "rtc:5V",  "esp:5V", "red", [] ],
+    [ "rtc:GND", "esp:GND.2", "black", [] ],
+    [ "rtc:SDA", "esp:21", "cyan", [] ],
+    [ "rtc:SCL", "esp:22", "magenta", [] ]
+  ]
 }

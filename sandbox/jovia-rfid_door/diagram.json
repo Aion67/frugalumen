@@ -3,64 +3,37 @@
   "author": "Jovia Minallah",
   "editor": "wokwi",
   "parts": [
-    {
-      "type": "board-esp32-devkit-c-v4",
-      "id": "esp",
-      "top": -48,
-      "left": 24.04,
-      "attrs": { "builder": "esp-idf" }
-    },
-    { "type": "board-mfrc522", "id": "rfid1", "top": -98.65, "left": 176.24, "attrs": {} },
-    {
-      "type": "wokwi-servo",
-      "id": "servo1",
-      "top": -60.4,
-      "left": -179.6,
-      "rotate": 180,
-      "attrs": {}
-    },
-    {
-      "type": "wokwi-servo",
-      "id": "servo2",
-      "top": 74,
-      "left": -179.6,
-      "rotate": 180,
-      "attrs": {}
-    },
-    { "type": "board-mfrc522", "id": "rfid2", "top": 74.15, "left": 176.24, "attrs": {} },
-    {
-      "type": "wokwi-buzzer",
-      "id": "bz1",
-      "top": -170.4,
-      "left": 59.4,
-      "attrs": { "volume": "0.1" }
-    }
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "board-mfrc522", "id": "rfid_entry", "top": -280, "left": -320, "attrs": {} },
+    { "type": "board-mfrc522", "id": "rfid_exit",  "top": -280, "left": -60,  "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo_entry", "top": -60, "left": -340, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo_exit",  "top": 60,  "left": -340, "attrs": {} },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 180, "left": -300, "attrs": { "volume": "0.2" } }
   ],
   "connections": [
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
     [ "esp:RX", "$serialMonitor:TX", "", [] ],
-    [ "rfid1:SDA", "esp:5", "green", [ "h-38.4", "v48" ] ],
-    [ "rfid1:SCK", "esp:18", "green", [ "h-38.4", "v28.8" ] ],
-    [ "rfid1:MOSI", "esp:23", "green", [ "h-38.4", "v-48" ] ],
-    [ "rfid1:MISO", "esp:19", "green", [ "h-38.4" ] ],
-    [ "rfid1:RST", "esp:22", "green", [ "h-38.4", "v-76.8" ] ],
-    [ "rfid1:GND", "esp:GND.2", "black", [ "h-38.4", "v-86.4" ] ],
-    [ "rfid1:3.3V", "esp:3V3", "green", [ "h-134.4", "v-105.6" ] ],
-    [ "esp:GND.1", "rfid2:GND", "black", [ "h124.95", "v67.2" ] ],
-    [ "rfid2:SDA", "esp:21", "green", [ "h-28.8", "v-96" ] ],
-    [ "rfid2:SCK", "esp:18", "green", [ "h-28.8", "v-76.8" ] ],
-    [ "rfid2:MOSI", "esp:23", "green", [ "h-28.8", "v-153.6" ] ],
-    [ "rfid2:MISO", "esp:19", "green", [ "h-28.8", "v-105.6" ] ],
-    [ "rfid2:RST", "esp:4", "green", [ "h-28.8", "v-86.4" ] ],
-    [ "rfid2:3.3V", "esp:3V3", "green", [ "h-124.8", "v-211.2" ] ],
-    [ "servo2:PWM", "esp:25", "green", [ "h28.8", "v19" ] ],
-    [ "servo1:PWM", "esp:26", "green", [ "h28.8", "v-96.2" ] ],
-    [ "servo2:V+", "esp:5V", "red", [ "h28.8", "v105.5" ] ],
-    [ "servo1:V+", "esp:5V", "red", [ "h28.8", "v-19.3" ] ],
-    [ "servo1:GND", "esp:GND.1", "black", [ "h28.8", "v-76.8" ] ],
-    [ "servo2:GND", "esp:GND.1", "black", [ "h28.8", "v48" ] ],
-    [ "bz1:1", "esp:27", "green", [ "v163.2", "h-57.6" ] ],
-    [ "bz1:2", "esp:GND.1", "green", [ "v192", "h-67.6" ] ]
-  ],
-  "dependencies": {}
+    [ "rfid_entry:3.3V", "esp:3V3", "red", [] ],
+    [ "rfid_entry:GND",  "esp:GND.1", "black", [] ],
+    [ "rfid_entry:SCK",  "esp:18", "orange", [] ],
+    [ "rfid_entry:MOSI", "esp:23", "blue", [] ],
+    [ "rfid_entry:MISO", "esp:19", "green", [] ],
+    [ "rfid_entry:SDA",  "esp:5",  "violet", [] ],
+    [ "rfid_entry:RST",  "esp:27", "gray", [] ],
+    [ "rfid_exit:3.3V", "esp:3V3", "red", [] ],
+    [ "rfid_exit:GND",  "esp:GND.1", "black", [] ],
+    [ "rfid_exit:SCK",  "esp:18", "orange", [] ],
+    [ "rfid_exit:MOSI", "esp:23", "blue", [] ],
+    [ "rfid_exit:MISO", "esp:19", "green", [] ],
+    [ "rfid_exit:SDA",  "esp:4",  "violet", [] ],
+    [ "rfid_exit:RST",  "esp:27", "gray", [] ],
+    [ "servo_entry:V+",  "esp:5V", "red", [] ],
+    [ "servo_entry:GND", "esp:GND.2", "black", [] ],
+    [ "servo_entry:PWM", "esp:25", "yellow", [] ],
+    [ "servo_exit:V+",   "esp:5V", "red", [] ],
+    [ "servo_exit:GND",  "esp:GND.2", "black", [] ],
+    [ "servo_exit:PWM",  "esp:26", "yellow", [] ],
+    [ "buzzer:2", "esp:2", "yellow", [] ],
+    [ "buzzer:1", "esp:GND.2", "black", [] ]
+  ]
 }

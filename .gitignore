@@ -64,3 +64,10 @@ dependencies.lock
 
 sdkconfig
 .DS_Store
+
+# sandbox build logs from the build-all script
+sandbox/*/build.log
+
+# microSD write-back folder used by wokwi.toml; the log itself is runtime data
+sdcard/*
+!sdcard/README.md
