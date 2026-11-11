@@ -1,6 +1,6 @@
 # shirley-lighting — notes
 
-//**What the module does.** One task per lecture room. Reads the PIR every 100 ms. Motion
+**What the module does.** One task per lecture room. Reads the PIR every 100 ms. Motion
 turns the LED on at once and tells core the room is occupied. When there has been no motion
 for `LIGHT_GRACE_MS` (10 s) the LED goes off and core is told the room is empty. Every
 on/off is logged as an event (`EV_LIGHT_ON` / `EV_LIGHT_OFF`), which the daily report
@@ -8,7 +8,7 @@ adds up into "hours lights were on".
 
 **Pins.** Room 1: PIR 32, LED 14. Room 2: PIR 33, LED 13. (All in `config.h`.)
 
-//## Lessons (build one at a time — edit `LESSON` in `main/CMakeLists.txt`)
+## Lessons (build one at a time — edit `LESSON` in `main/CMakeLists.txt`)
 
 | File | Shows |
 |---|---|
@@ -18,7 +18,7 @@ adds up into "hours lights were on".
 | `04_grace_timer.c` | remember last motion, switch off after a delay |
 | `05_full_module.c` | the real component, two rooms, events to core |
 
-//## Gotchas I should be able to explain
+## Gotchas I should be able to explain
 
 - **Why poll instead of an interrupt?** Polling every 100 ms is simple, costs nothing
   noticeable, and avoids ISR rules (IRAM_ATTR, no logging, volatile flags). An interrupt
@@ -32,7 +32,7 @@ adds up into "hours lights were on".
 - **Why does the Wokwi PIR go LOW after 5 s?** Its `delayTime` attribute. The grace timer is
   what keeps the light on between movements.
 
-//## Tested how
+## Tested how
 
 Wokwi: click a PIR → "Simulate Motion". LED lights at once; goes off 10 s after the PIR
 output drops. Serial shows the events.
