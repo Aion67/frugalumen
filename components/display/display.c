@@ -13,6 +13,7 @@ k/*
 #include "config.h"
 #include "lcd1602.h"
 #include "esp_log.h"
+#include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 static const char *TAG = "display";
@@ -56,7 +57,7 @@ esp_err_t display_init(void)
 
     BaseType_t ok = xTaskCreate(display_task, "display", 3072, NULL, 2, NULL);
     if (ok != pdPASS) {
-        ESP_LOGE(TAG, "could not start task");
+        ESP_LOGE(TAG, "Task could not be created");
         return ESP_FAIL;
     }
     ESP_LOGI(TAG, "LCD ready");
